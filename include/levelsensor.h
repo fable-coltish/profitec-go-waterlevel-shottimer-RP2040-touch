@@ -1,8 +1,8 @@
 #ifndef _LEVELSENSOR_H
 #define _LEVELSENSOR_H
 
-#define PIN_LEVELSENSOR_TX 4u
-#define PIN_LEVELSENSOR_RX 5u
+#define PIN_LEVELSENSOR_TX 16u
+#define PIN_LEVELSENSOR_RX 17u
 
 #include <Arduino.h>
 
