@@ -6,13 +6,13 @@ namespace LevelSensor {
     
     void flush() {
         // Empty buffer by reading from it until it is empty.
-        while(uart_is_readable(uart1)) {
-            uart_getc(uart1);
+        while(uart_is_readable(uart0)) {
+            uart_getc(uart0);
         }
     }
 
     void init() {
-        // Route HW UART1 to given RX,TX pins.
+        // Route HW UART0 to given RX,TX pins.
         gpio_set_function(PIN_LEVELSENSOR_TX, GPIO_FUNC_UART);
         gpio_set_function(PIN_LEVELSENSOR_RX, GPIO_FUNC_UART);
     }
@@ -33,7 +33,7 @@ namespace LevelSensor {
 
     float getDistance() {
         // Initialize uart
-        uart_init(uart1, 9600);
+        uart_init(uart0, 9600);
         sleep_ms(100);
 
         // Clear old data from serial buffer
@@ -46,13 +46,13 @@ namespace LevelSensor {
             sleep_ms(LEVEL_READ_DELAY_MS);
 
             // Recieved no new data. Retry by continuing with next loop
-            if(!uart_is_readable(uart1)) {
+            if(!uart_is_readable(uart0)) {
                 continue;
             }
             
             // New data was recieved. According to the sensor wiki, there should be 4 bytes.
             // https://wiki.dfrobot.com/_A02YYUW_Waterproof_Ultrasonic_Sensor_SKU_SEN0311
-            uart_read_blocking(uart1, serialData, 4);
+            uart_read_blocking(uart0, serialData, 4);
 
             // Check if header byte is correct
             if(serialData[0]==0xff) {
@@ -68,14 +68,14 @@ namespace LevelSensor {
                         distance = LEVEL_MIN_DIST_MM;
                     }
                     // Close uart
-                    uart_deinit(uart1);
+                    uart_deinit(uart0);
                     return distance;
                 }
             }
         }
 
         // Close uart
-        uart_deinit(uart1);
+        uart_deinit(uart0);
         // failed to read a valid value.
         sout.err() <= "Failed to read from level sensor";
         return -1;
